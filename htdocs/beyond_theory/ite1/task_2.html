@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+    <title>ITE1 - Task 2</title>
+
+    <script type="text/javascript">
+
+
+        /**
+         * Updates the div with the specified id with "0". Triggers an interval
+         * afterwards which periodically updates the div with its value
+         * increased with 1
+         *
+         * @param {String} id The name of the id of the div which should be
+         * initialised with a "0"
+         *
+         * @see count()
+         */
+        function myBodyIsReady(id) {
+
+            var div = document.getElementById(id);
+
+            if (div) {
+
+                div.innerHTML = "0";
+                window.setInterval(count(id), 1000);
+            }
+
+        }
+
+        /**
+         * Returns a function which, when called, updates the innerHTML
+         * of a div with it's numeric value increased by 1, otherwise it's
+         * updated with 0.
+         *
+         * @param {String} id The name of the id of the div that should get
+         *                    updated in the returning function.
+         *
+         * @returns {Function}
+         */
+        function count(id) {
+
+            return function() {
+                var div = document.getElementById(id),
+                    value;
+
+               if (div) {
+                    value = parseInt(div.innerHTML, 10);
+
+                    div.innerHTML = isNaN(value) ? "0" : ++value;
+               }
+            }
+        }
+
+
+    </script>
+
+</head>
+
+    <body onload="myBodyIsReady('counter')">
+
+    <div id="counter"></div>
+
+
+    </body>
+
+</html>

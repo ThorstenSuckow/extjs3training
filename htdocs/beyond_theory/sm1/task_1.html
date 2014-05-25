@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>SM1 - Task 1</title>
+
+    <link href="../../ext-3.4.1/resources/css/ext-all.css" type="text/css" rel="stylesheet">
+
+    <script type="text/javascript" src="../../ext-3.4.1/adapter/ext/ext-base-debug.js"></script>
+    <script type="text/javascript" src="../../ext-3.4.1/ext-all-debug.js"></script>
+
+    <script type="text/javascript">
+
+        Ext.namespace('Zarafa.model.mail');
+
+        Zarafa.model.mail.Message = Ext.data.Record.create([{
+            name : 'body',
+            type : 'string'
+        }, {
+            name : 'header',
+            type : 'string'
+        }, {
+            name : 'subject',
+            type : 'string'
+        }, {
+            name : 'sender',
+            type : 'auto'
+        }, {
+            name : 'recipients',
+            type : 'auto'
+        }]);
+
+
+        Zarafa.model.mail.MailAddress = Ext.data.Record.create([{
+            name : 'name',
+            type : 'string'
+        }, {
+            name : 'address',
+            type : 'string'
+        }]);
+
+
+        Zarafa.model.mail.Sender    = Ext.extend(Zarafa.model.mail.MailAddress, {});
+        Zarafa.model.mail.Recipient = Ext.extend(Zarafa.model.mail.MailAddress, {});
+
+
+        Ext.onReady(function() {
+
+            var message = new Zarafa.model.mail.Message({
+                body : 'This is the mail body',
+                header : 'X-Mail-Generator: Zarafa',
+                subject : 'This is a test mail'
+            });
+
+            var sender = new Zarafa.model.mail.Sender({
+                name : 'John Smith',
+                address : 'john@smith.com'
+            });
+
+            var recipients = [
+                new Zarafa.model.mail.Recipient({
+                    name : 'Mary Lamb',
+                    address : 'mary@oldmacdonalds.com'
+            }), new Zarafa.model.mail.Recipient({
+                    name : 'Tin Man',
+                    address : 'theman_39@oz.com'
+            })];
+
+
+            message.set('sender', sender);
+            message.set('recipients', recipients);
+
+
+            console.log(message.get('sender'));
+            console.log(message.get('recipients'));
+
+
+        });
+
+
+
+    </script>
+</head>
+
+    <body>
+
+
+    </body>
+
+</html>

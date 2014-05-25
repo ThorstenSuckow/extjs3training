@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+    <title>ML1</title>
+
+    <link href="../ext-3.4.1/resources/css/ext-all.css" type="text/css" rel="stylesheet">
+
+    <script type="text/javascript" src="../ext-3.4.1/adapter/ext/ext-base-debug.js"></script>
+    <script type="text/javascript" src="../ext-3.4.1/ext-all-debug.js"></script>
+
+    <script type="text/javascript">
+
+        Ext.onReady(function(){
+
+            var tabPanel = new Ext.Panel({
+
+                i : 0.976353,
+
+                activatedTabs : {},
+
+                title : 'Panel',
+
+                enableTabScroll : true,
+
+                layout : 'border',
+
+                height : 600,
+
+                width : 800,
+
+                renderTo : document.body,
+
+                initComponent : function() {
+
+                    this.addEvents('panelavailable');
+
+                    this.on('afterrender', function() {
+
+                        this.on('panelavailable', function(triggerButton, panel) {
+
+                            var parts = panel.itemId.split('_');
+
+                            if (parts) {
+                                if (parts.length) {
+                                    var nm = parseInt(parts[1], 10);
+
+                                    while (nm > 0) {
+                                        nm = nm - 2;
+
+                                        if (nm === 0) {
+                                            this.getComponent('tabPanel').add(
+                                                panel
+                                            );
+                                            this.getComponent('tabPanel').setActiveTab(
+                                                panel.itemId
+                                            );
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+
+                        });
+
+
+                    }, this);
+
+                    Ext.Panel.prototype.initComponent.call(this);
+                },
+
+                items : [
+                    new Ext.TabPanel({
+                        region : 'center',
+                        height : 600,
+                        activeItem : 0,
+                        title : 'Tab Panel',
+                        itemId : 'tabPanel',
+                        items : [
+                            new Ext.Panel({
+                                region : 'center',
+                                height : 600,
+                                title : 'Perma Panel',
+                                itemId : 'permaPanel'
+                            })
+                        ]
+                    }),
+                    new Ext.BoxComponent({
+                        region : 'south',
+                        itemId : 'statusBar',
+                        height : 40,
+                        autoEl : {
+                            tagName : 'div',
+                            html    : 'Ready'
+                        },
+                        listeners : {
+                            afterrender : {
+                                fn : function() {
+                                    this.ownerCt.getComponent('tabPanel')
+                                            .getComponent('permaPanel').on(
+                                        'activate',
+                                        function() {
+                                            this.ownerCt.getComponent('statusBar').update(
+                                                    'Perma Panel activated'
+                                            );
+                                        }, this);
+                                }
+                            }
+                        }
+
+                    })
+                ],
+
+
+
+                tbar : [{
+                    text : 'Open Panel',
+                    i : 0,
+                    myOwner : null,
+                    handler : function() {
+
+                        var me = this,
+                            myOwner = null;
+
+                        this.i++;
+
+                        if (!this.myOwner) {
+                            this.myOwner = this.ownerCt.ownerCt;
+                        }
+
+                        myOwner = this.myOwner;
+
+                        myOwner.fireEvent('panelavailable', this, new Ext.Panel({
+                            closable : true,
+                            itemId : 'tab_' + this.i,
+                            title : 'Panel ' + this.i,
+                            listeners : {
+                                activate : {
+                                    fn : function() {
+                                        myOwner.getComponent('statusBar').update(
+                                                this.title + ' activated'
+                                        );
+                                        myOwner.activatedTabs[this.itemId] = this;
+                                    }
+                                }
+
+                            }
+                        }));
+
+                    }
+                }],
+
+                activeItem : 0
+
+
+            });
+
+
+
+
+        });
+
+    </script>
+
+</head>
+
+    <body>
+
+
+
+    </body>
+
+</html>

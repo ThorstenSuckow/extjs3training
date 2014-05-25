@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>ITE1 - Task 1</title>
+
+    <link href="../../ext-3.4.1/resources/css/ext-all.css" type="text/css" rel="stylesheet">
+
+    <script type="text/javascript" src="../../ext-3.4.1/adapter/ext/ext-base-debug.js"></script>
+    <script type="text/javascript" src="../../ext-3.4.1/ext-all-debug.js"></script>
+
+    <script type="text/javascript">
+
+        Ext.namespace('Zarafa.model.mail');
+
+        Zarafa.model.mail.MailMessage = Ext.data.Record.create([{
+            name : 'subject',
+
+            type : 'string',
+
+            allowBlank : false
+
+        }]);
+
+        Zarafa.model.mail.MailMessage.prototype.isValid = function() {
+            if (Ext.data.Record.prototype.isValid.call(this) === false) {
+                return false;
+            }
+
+            return this.data.subject.toLowerCase() !== 'no subject';
+        };
+
+        var mailMessage = new Zarafa.model.mail.MailMessage({
+            subject : 'No Subject'
+        });
+
+        console.log(mailMessage.isValid());
+
+        mailMessage.set('subject', 'okay, here\'s a valid subject');
+
+        console.log(mailMessage.isValid());
+
+
+    </script>
+</head>
+
+    <body>
+
+
+    </body>
+
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>SM1 - Task 3</title>
+
+    <link href="../../ext-3.4.1/resources/css/ext-all.css" type="text/css" rel="stylesheet">
+
+    <script type="text/javascript" src="../../ext-3.4.1/adapter/ext/ext-base-debug.js"></script>
+    <script type="text/javascript" src="../../ext-3.4.1/ext-all-debug.js"></script>
+
+    <script type="text/javascript">
+
+        Ext.namespace('Zarafa.model.mail');
+
+
+        Zarafa.model.mail.Message = Ext.data.Record.create([{
+            name : 'body',
+            type : 'string'
+        }, {
+            name : 'header',
+            type : 'string'
+        }, {
+            name : 'subject',
+            type : 'string'
+        }, {
+            name : 'sender',
+            type : 'auto'
+        }, {
+            name : 'recipients',
+            type : 'auto'
+        }]);
+
+
+        Ext.onReady(function() {
+
+            var messages = [];
+
+            for (var i = 0, len = 4; i < len; i++) {
+
+                messages.push(
+                    new Zarafa.model.mail.Message({
+                        body : 'This is the mail body',
+                        header : 'X-Mail-Generator: Zarafa',
+                        subject : 'This is a test mail ' + (i+1)
+                    })
+                );
+
+            }
+
+            Ext.namespace('Zarafa.store.mail');
+
+            Zarafa.store.mail.MessageRepository  = Ext.extend(Ext.data.Store, {
+
+                findRecord : function(value, field) {
+
+                    var recs = this.getRange(),
+                        rec = null;
+
+                    for (var i = 0, len = recs.length; i < len; i++) {
+                        rec = recs[i];
+
+                        if (rec.get(field) === value) {
+                            return rec;
+                        }
+                    }
+
+                    return null;
+                }
+
+            });
+
+            var store = new Zarafa.store.mail.MessageRepository({
+
+                reader : new Ext.data.JsonReader({
+                    root : 'data'
+                }, Zarafa.model.mail.Message)
+
+            });
+
+            store.add(messages);
+
+            console.log("Find 123 in \"subject\"");
+            console.log(store.findRecord(123, 'subject'));
+
+            console.log("Find \"This is a test mail 1\" in \"subject\"");
+            console.log(store.findRecord('This is a test mail 1', 'subject'));
+
+            console.log("Find \"This is a test mail 1\" in \"field_not_existing\"");
+            console.log(store.findRecord('This is a test mail 1', 'field_not_existing'));
+
+        });
+
+
+
+    </script>
+</head>
+
+    <body>
+
+
+    </body>
+
+</html>

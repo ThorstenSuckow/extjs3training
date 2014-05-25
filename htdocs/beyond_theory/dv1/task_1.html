@@ -1,0 +1,191 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>DV1 - Task 1</title>
+
+    <link href="../../ext-3.4.1/resources/css/ext-all.css" type="text/css" rel="stylesheet">
+
+    <script type="text/javascript" src="../../ext-3.4.1/adapter/ext/ext-base-debug.js"></script>
+    <script type="text/javascript" src="../../ext-3.4.1/ext-all-debug.js"></script>
+
+    <style type="text/css">
+
+        .mailEntry {
+            cursor : pointer;
+        }
+
+        .overCls {
+
+            background-color : red;
+
+        }
+
+        .selectedCls {
+            background-color : green;
+        }
+
+    </style>
+
+    <script type="text/javascript">
+
+        Ext.namespace('Zarafa.model.mail');
+
+        Zarafa.model.mail.Message = Ext.data.Record.create([{
+            name : 'body',
+            type : 'string'
+        }, {
+            name : 'header',
+            type : 'string'
+        }, {
+            name : 'subject',
+            type : 'string'
+        }, {
+            name : 'sender',
+            type : 'auto'
+        }, {
+            name : 'recipients',
+            type : 'auto'
+        }, {
+            name : 'id'
+        }]);
+
+
+        Ext.namespace('Zarafa.store.mail');
+        Zarafa.store.mail.MessageRepository  = Ext.extend(Ext.data.Store, {
+
+            findRecord : function(value, field) {
+
+                var recs = this.getRange(),
+                        rec = null;
+
+                for (var i = 0, len = recs.length; i < len; i++) {
+                    rec = recs[i];
+
+                    if (rec.get(field) === value) {
+                        return rec;
+                    }
+                }
+
+                return null;
+            }
+
+        });
+
+        Ext.namespace('Zarafa.view.mail');
+
+        Zarafa.view.mail.List = Ext.extend(Ext.DataView, {
+
+            overClass : 'overCls',
+
+            selectedClass : 'selectedCls',
+
+            itemSelector : 'div.mailEntry',
+
+            singleSelect : true,
+
+            initComponent : function() {
+
+                var me = this;
+
+                me.renderTo = document.body;
+
+                me.tpl = new Ext.XTemplate(
+                    '<div>',
+                     '<tpl for=".">',
+                      '<div class="mailEntry" id="mail_{id}">{subject}</div>',
+                     '</tpl>',
+                    '</div>'
+                );
+
+                me.on('selectionchange', me.onListSelectionChange, me);
+
+                Zarafa.view.mail.List.superclass.initComponent.call(me);
+            },
+
+            onListSelectionChange : function(view, selections) {
+
+                var me = this,
+                    sel, parts, id, ind, rec;
+
+                if (selections && selections.length) {
+
+                    sel = selections[0];
+
+                    parts = sel.id.split('_');
+
+                    if (parts && parts.length) {
+                        id = parseInt(parts[1], 10);
+
+                        if (isNaN(id)) {
+                            console.log("NaN");
+                            return;
+                        }
+
+                        ind = me.store.findExact('id', id);
+
+                        if (ind < 0) {
+                            console.log("id not found: ", id);
+                            return;
+                        }
+
+                        rec = me.store.getAt(ind);
+
+                        console.log("Record clicked: ", rec);
+
+                        return;
+                    }
+
+                }
+
+                console.log("Could not determine selected record");
+
+            }
+
+        });
+
+        Ext.onReady(function() {
+
+            var messages = [],
+                id;
+
+            for (var i = 0, len = 4; i < len; i++) {
+
+                id = i + 1;
+
+                messages.push(
+                        new Zarafa.model.mail.Message({
+                            body : 'This is the mail body',
+                            header : 'X-Mail-Generator: Zarafa',
+                            subject : 'This is a test mail ' + (i+1),
+                            id : id
+                        }, id)
+                );
+
+            }
+
+            var store = new Zarafa.store.mail.MessageRepository({
+                reader : new Ext.data.JsonReader({
+                    root : 'data'
+                }, Zarafa.model.mail.Message)
+
+            });
+
+            store.add(messages);
+
+            var list = new Zarafa.view.mail.List({
+                store : store
+            });
+
+        });
+
+
+
+    </script>
+</head>
+
+<body>
+
+
+</body>
+
+</html>
