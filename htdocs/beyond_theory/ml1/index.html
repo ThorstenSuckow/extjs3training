@@ -10,61 +10,37 @@
     <script type="text/javascript" src="../ext-3.4.1/ext-all-debug.js"></script>
 
     <script type="text/javascript">
-
         Ext.onReady(function(){
-
             var tabPanel = new Ext.Panel({
-
                 i : 0.976353,
-
                 activatedTabs : {},
-
                 title : 'Panel',
-
                 enableTabScroll : true,
-
                 layout : 'border',
-
                 height : 600,
-
                 width : 800,
-
                 renderTo : document.body,
 
                 initComponent : function() {
-
                     this.addEvents('panelavailable');
-
                     this.on('afterrender', function() {
 
-                        this.on('panelavailable', function(triggerButton, panel) {
-
+                    this.on('panelavailable', function(triggerButton, panel) {
                             var parts = panel.itemId.split('_');
 
                             if (parts) {
                                 if (parts.length) {
                                     var nm = parseInt(parts[1], 10);
 
-                                    while (nm > 0) {
-                                        nm = nm - 2;
+                                    nm %= 2;
 
-                                        if (nm === 0) {
-                                            this.getComponent('tabPanel').add(
-                                                panel
-                                            );
-                                            this.getComponent('tabPanel').setActiveTab(
-                                                panel.itemId
-                                            );
-                                            break;
-                                        }
+                                    if (nm === 0) {
+                                        this.getComponent('tabPanel').add(panel);
+                                        this.getComponent('tabPanel').setActiveTab(panel.itemId);
                                     }
                                 }
                             }
-
-
                         });
-
-
                     }, this);
 
                     Ext.Panel.prototype.initComponent.call(this);
@@ -86,6 +62,7 @@
                             })
                         ]
                     }),
+                    
                     new Ext.BoxComponent({
                         region : 'south',
                         itemId : 'statusBar',
@@ -99,20 +76,18 @@
                                 fn : function() {
                                     this.ownerCt.getComponent('tabPanel')
                                             .getComponent('permaPanel').on(
-                                        'activate',
-                                        function() {
-                                            this.ownerCt.getComponent('statusBar').update(
-                                                    'Perma Panel activated'
-                                            );
-                                        }, this);
+                                                'activate',
+                                                function() {
+                                                    this.ownerCt.getComponent('statusBar').update(
+                                                        'Perma Panel activated'
+                                                    );
+                                                },
+                                            this);
                                 }
                             }
                         }
-
                     })
                 ],
-
-
 
                 tbar : [{
                     text : 'Open Panel',
@@ -121,7 +96,7 @@
                     handler : function() {
 
                         var me = this,
-                            myOwner = null;
+                        myOwner = null;
 
                         this.i++;
 
@@ -141,34 +116,20 @@
                                         myOwner.getComponent('statusBar').update(
                                                 this.title + ' activated'
                                         );
+
                                         myOwner.activatedTabs[this.itemId] = this;
                                     }
                                 }
-
                             }
                         }));
-
                     }
                 }],
 
                 activeItem : 0
-
-
             });
-
-
-
-
         });
-
     </script>
-
 </head>
-
     <body>
-
-
-
     </body>
-
 </html>
